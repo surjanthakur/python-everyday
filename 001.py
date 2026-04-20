@@ -25,3 +25,21 @@ while i < 5:
         print("*", end=" ")
     i += 1
     print()
+
+
+# print the pattern =>
+# *****
+# ****
+# ***
+# **
+# *
+
+
+n = 5
+
+while n >= 1:
+    for i in range(1, n + 1):
+        print("*", end=" ")
+
+    print("")
+    n -= 1
