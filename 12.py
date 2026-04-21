@@ -1,15 +1,14 @@
-# Practice Problem: Write a recursive function addition() that calculates the sum of numbers from 0 to 10. A recursive function is a function that calls itself to solve smaller instances of the same problem.
+# Practice Problem: Create a function that takes a list of numbers as input and returns the largest item from that list without using the built-in max() function (to practice manual logic).
+
+nums = [1, 2, 3, 4, 5, 67, 45, 67, 23, 78, 45]
 
 
-num = 10
+def big_num(nums: list):
+    max_num = 0
+    for i in nums:
+        if i > max_num:
+            max_num = i
+    print(max_num)
 
 
-def addition(n1: int) -> int:
-    if n1 > 0:
-        return n1 + addition(n1 - 1)
-    else:
-        return 0
-
-
-sum = addition(num)
-print(sum)
+big_num(nums)
