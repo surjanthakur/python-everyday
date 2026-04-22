@@ -1,3 +1,5 @@
+# Practice Problem: Write a function to check if a full sentence is a palindrome. You must ignore case, spaces, and all punctuation marks.
+
 string = "A man, a plan, a canal: Panama"
 
 
