@@ -33,4 +33,7 @@ async def html_template():
 
 @app.websocket("/ws/connection")
 async def websocket_connection(websocket: WebSocket):
-    pass
+    await websocket.accept()
+    while True:
+        data = websocket.receive_text()
+        await websocket.send_text(f"message text was: {data}")
