@@ -1,5 +1,6 @@
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, WebSocketException
 from fastapi.responses import HTMLResponse
+import uvicorn
 
 app = FastAPI()
 
@@ -19,7 +20,7 @@ html = """
         <ul id='messages'>
         </ul>
       <script>
-            let ws = new WebSocket("ws://localhost:8000/ws/connection");
+            let ws = new WebSocket("ws://localhost:8000/ws");
             ws.onmessage = function(event) {
                 let messages = document.getElementById('messages')
                 let message = document.createElement('li')
@@ -44,9 +45,16 @@ async def html_template():
     return HTMLResponse(content=html, status_code=200)
 
 
-@app.websocket("/ws/connection")
+@app.websocket("/ws")
 async def websocket_connection(websocket: WebSocket):
+    print("connection looking....")
     await websocket.accept()
+    print("connection gotted")
     while True:
-        data = websocket.receive_text()
+        data = await websocket.receive_text()
+        print(f"received data from client : {data}")
         await websocket.send_text(f"message text was: {data}")
+
+
+if __name__ == "__main__":
+    uvicorn.run(app="main:app", host="localhost", port=8000)
