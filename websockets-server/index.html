@@ -34,7 +34,7 @@
           autocomplete="off"
           placeholder="Type your message..."
         />
-        <button type="button" class="btn btn-primary" id="sendBtn">Send</button>
+        <button type="submit" class="btn btn-primary" id="sendBtn">Send</button>
       </div>
     </form>
 
@@ -42,10 +42,12 @@
 
     <script type="py">
 
-              from js import Date, WebSocket, document, window
+      from js import Date, WebSocket, document, window
 
       client_id = int(Date.now())
+
       document.getElementById("ws-id").textContent = str(client_id)
+
       ws = WebSocket.new(f"ws://localhost:8000/ws/connection/{client_id}")
 
 
@@ -61,7 +63,8 @@
           append_message(event.data)
 
 
-      def send_message(_event=None):
+      def send_message(evt=None):
+          evt and evt.preventDefault()
           input_el = document.getElementById("messageText")
           value = input_el.value.strip()
           if not value:
@@ -71,7 +74,7 @@
 
 
       ws.onmessage = on_message
-      document.getElementById("sendBtn").addEventListener("click", send_message)
+      document.querySelector('form').addEventListener("submit", send_message)
       document.getElementById("messageText").addEventListener(
           "keydown",
           lambda event: send_message() if event.key == "Enter" else None,
