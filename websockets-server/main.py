@@ -40,27 +40,39 @@ html = """
 """
 
 
+class ConnectionManager:
+    def __init__(self):
+        self.active_connections: list[WebSocket] = []
+
+    # too stablish connection --->
+    async def connect_connection(self, websocket: WebSocket):
+        await websocket.accept()
+        self.active_connections.append(websocket)
+
+    # to close connection ---->
+    def close_connection(self, websocket: WebSocket):
+        self.active_connections.remove(websocket)
+
+    # to send message --->
+    async def send_messages(self, message: str, websocket: WebSocket):
+        await websocket.send_text(message)
+
+    async def brodcast_messages(self, message: str):
+        for conn in self.active_connections:
+            await conn.send_text(message)
+
+
+socket_manager = ConnectionManager()
+
+
 @app.get("/")
 async def html_template():
     return HTMLResponse(content=html, status_code=200)
 
 
 @app.websocket("/ws/connection")
-async def websocket_connection(websocket: WebSocket):
-    try:
-        await websocket.accept()
-
-        while True:
-            data = await websocket.receive_text()
-            if "quit" in data or "close" in data:
-                await websocket.send_text("Closing connection")
-                await websocket.close(
-                    code=1000, reason="client req to close the connection"
-                )
-                break
-            await websocket.send_text(f"message text was: {data}")
-    except WebSocketDisconnect:
-        print("Client disconnected")
+async def websocket_endpoint(websocket: WebSocket):
+    pass
 
 
 if __name__ == "__main__":
