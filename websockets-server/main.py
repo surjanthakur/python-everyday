@@ -5,7 +5,7 @@ import uvicorn
 app = FastAPI()
 
 
-html = f"""
+html = """
 <!DOCTYPE html>
 <html>
     <head>
@@ -26,11 +26,11 @@ html = f"""
         </ul>
 
       <script>
-            let client_id = Date.now()
-            document.querySelector('#ws-id').textContent = client_id
-            let ws = new WebSocket(`ws://localhost:8000/ws/connection/${client_id}`);
+      let client_id = Date.now()
+      document.querySelector('#ws-id').textContent = client_id
+      let ws = new WebSocket("ws://localhost:8000/ws/connection/${client_id}");
             ws.onmessage = function(event) {
-                let messages = document.getElementById('messages')
+                let messages = document.getElementById('messages');
                 let message = document.createElement('li')
                 let content = document.createTextNode(event.data)
                 message.appendChild(content)
