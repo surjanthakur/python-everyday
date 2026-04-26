@@ -5,22 +5,30 @@ import uvicorn
 app = FastAPI()
 
 
-html = """
+html = f"""
 <!DOCTYPE html>
 <html>
     <head>
         <title>Chat</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     </head>
     <body>
         <h1>WebSocket Chat</h1>
-        <form action="" onsubmit="sendMessage(event)">
-            <input type="text" id="messageText" autocomplete="off"/>
+
+        <h2 class="text-danger">you id: <span id="ws-id"></span></h2>
+   
+        <form action="" class="mt-5" onsubmit="sendMessage(event)">
+            <input type="text" class="form control" id="messageText" autocomplete="off"/>
             <button>Send</button>
         </form>
-        <ul id='messages'>
+
+        <ul id='messages' class="mt-5>
         </ul>
+
       <script>
-            let ws = new WebSocket("ws://localhost:8000/ws/connection");
+            let client_id = Date.now()
+            document.querySelector('#ws-id').textContent = client_id
+            let ws = new WebSocket(`ws://localhost:8000/ws/connection/${client_id}`);
             ws.onmessage = function(event) {
                 let messages = document.getElementById('messages')
                 let message = document.createElement('li')
@@ -35,6 +43,7 @@ html = """
                 event.preventDefault()
             }
         </script>
+
     </body>
 </html>
 """
@@ -70,9 +79,18 @@ async def html_template():
     return HTMLResponse(content=html, status_code=200)
 
 
-@app.websocket("/ws/connection")
-async def websocket_endpoint(websocket: WebSocket):
-    pass
+@app.websocket("/ws/connection/{client_id}")
+async def websocket_endpoint(websocket: WebSocket, client_id: int):
+    try:
+        await socket_manager.connect_connection(websocket)
+        while True:
+            data = websocket.receive_text()
+            await socket_manager.send_messages(f"you wrote: {data}", websocket)
+            await socket_manager.brodcast_messages(f"client {client_id} says: {data}")
+    except WebSocketDisconnect:
+        socket_manager.close_connection(websocket)
+        await socket_manager.brodcast_messages(f"client {client_id} has left the chat")
+        print("connection close")
 
 
 if __name__ == "__main__":
