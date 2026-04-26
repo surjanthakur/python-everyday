@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WebSocket Chat</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://pyscript.net/releases/2024.1.1/core.css"
+    />
+    <script
+      type="module"
+      src="https://pyscript.net/releases/2024.1.1/core.js"
+    ></script>
+  </head>
+  <body class="container py-4">
+    <h1>WebSocket Chat</h1>
+    <h2 class="text-danger">
+      your id: <span class="text-danger" id="ws-id"></span>
+    </h2>
+
+    <form class="mt-4" onsubmit="return false;">
+      <div class="input-group">
+        <input
+          type="text"
+          class="form-control"
+          id="messageText"
+          autocomplete="off"
+          placeholder="Type your message..."
+        />
+        <button type="button" class="btn btn-primary" id="sendBtn">Send</button>
+      </div>
+    </form>
+
+    <ul id="messages" class="mt-4 list-group"></ul>
+
+    <script type="py">
+
+              from js import Date, WebSocket, document, window
+
+      client_id = int(Date.now())
+      document.getElementById("ws-id").textContent = str(client_id)
+      ws = WebSocket.new(f"ws://localhost:8000/ws/connection/{client_id}")
+
+
+      def append_message(message_text: str):
+          messages = document.getElementById("messages")
+          item = document.createElement("li")
+          item.className = "list-group-item"
+          item.textContent = message_text
+          messages.appendChild(item)
+
+
+      def on_message(event):
+          append_message(event.data)
+
+
+      def send_message(_event=None):
+          input_el = document.getElementById("messageText")
+          value = input_el.value.strip()
+          if not value:
+              return
+          ws.send(value)
+          input_el.value = ""
+
+
+      ws.onmessage = on_message
+      document.getElementById("sendBtn").addEventListener("click", send_message)
+      document.getElementById("messageText").addEventListener(
+          "keydown",
+          lambda event: send_message() if event.key == "Enter" else None,
+      )
+    </script>
+  </body>
+</html>
