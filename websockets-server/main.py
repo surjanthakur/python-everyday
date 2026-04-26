@@ -61,7 +61,7 @@ class ConnectionManager:
     async def connect_connection(self, websocket: WebSocket):
         await websocket.accept()
         self.active_connections.append(websocket)
-        print(f"active connections: {self.active_connections}")
+        print(f"active connections: {[conn for conn in self.active_connections]}")
 
     # to close connection ---->
     def close_connection(self, websocket: WebSocket):
@@ -95,7 +95,9 @@ async def websocket_endpoint(websocket: WebSocket, client_id: int):
                 break
 
             await socket_manager.send_messages(f"you wrote: {data}", websocket)
-            await socket_manager.broadcast_messages(f"client {client_id} says: {data}")
+            await socket_manager.broadcast_messages(
+                message=f"user {client_id} says: {data} to you"
+            )
     except WebSocketDisconnect:
         socket_manager.close_connection(websocket)
         await socket_manager.broadcast_messages(f"client {client_id} has left the chat")
