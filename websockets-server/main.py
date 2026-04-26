@@ -20,7 +20,7 @@ html = """
         <ul id='messages'>
         </ul>
       <script>
-            let ws = new WebSocket("ws://localhost:8000/ws");
+            let ws = new WebSocket("ws://localhost:8000/ws/connection");
             ws.onmessage = function(event) {
                 let messages = document.getElementById('messages')
                 let message = document.createElement('li')
@@ -45,7 +45,7 @@ async def html_template():
     return HTMLResponse(content=html, status_code=200)
 
 
-@app.websocket("/ws")
+@app.websocket("/ws/connection")
 async def websocket_connection(websocket: WebSocket):
     print("connection looking....")
     await websocket.accept()
