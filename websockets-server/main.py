@@ -15,7 +15,7 @@ html = """
     <body>
         <h1>WebSocket Chat</h1>
 
-        <h2 class="text-danger">you id: <span id="ws-id"></span></h2>
+        <h2 class="text-danger">your id: <span class="text-danger" id="ws-id"></span></h2>
    
         <form action="" class="mt-5" onsubmit="sendMessage(event)">
             <input type="text" class="form control" id="messageText" autocomplete="off"/>
@@ -26,9 +26,12 @@ html = """
         </ul>
 
       <script>
-      let client_id = Date.now()
-      document.querySelector('#ws-id').textContent = client_id
-      let ws = new WebSocket("ws://localhost:8000/ws/connection/${client_id}");
+              let client_id = Date.now();
+              window.addEventListener('DOMContentLoaded', () => {
+                document.getElementById('ws-id').textContent = client_id;
+              });
+         
+               let ws = new WebSocket("ws://localhost:8000/ws/connection/${client_id}");
             ws.onmessage = function(event) {
                 let messages = document.getElementById('messages');
                 let message = document.createElement('li')
@@ -94,4 +97,4 @@ async def websocket_endpoint(websocket: WebSocket, client_id: int):
 
 
 if __name__ == "__main__":
-    uvicorn.run(app="main:app", host="localhost", port=8000)
+    uvicorn.run(app="main:app", host="localhost", port=8000, reload=True)
