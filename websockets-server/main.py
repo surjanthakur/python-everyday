@@ -18,7 +18,7 @@ html = """
         <h2 class="text-danger">your id: <span class="text-danger" id="ws-id"></span></h2>
    
         <form action="" class="mt-5" onsubmit="sendMessage(event)">
-            <input type="text" class="form-control" id="messageText" autocomplete="off"/>
+            <input type="text" id="messageText" autocomplete="off"/>
             <button>Send</button>
         </form>
 
@@ -90,8 +90,12 @@ async def websocket_endpoint(websocket: WebSocket, client_id: int):
         await socket_manager.connect_connection(websocket)
         while True:
             data = await websocket.receive_text()
+            if "quit" in data or "close" in data:
+                await websocket.close(reason="client leave the chat room")
+                break
+
             await socket_manager.send_messages(f"you wrote: {data}", websocket)
-            await socket_manager.brodcast_messages(f"client {client_id} says: {data}")
+            await socket_manager.broadcast_messages(f"client {client_id} says: {data}")
     except WebSocketDisconnect:
         socket_manager.close_connection(websocket)
         await socket_manager.broadcast_messages(f"client {client_id} has left the chat")
