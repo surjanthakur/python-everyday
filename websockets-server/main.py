@@ -47,13 +47,20 @@ async def html_template():
 
 @app.websocket("/ws/connection")
 async def websocket_connection(websocket: WebSocket):
-    print("connection looking....")
-    await websocket.accept()
-    print("connection gotted")
-    while True:
-        data = await websocket.receive_text()
-        print(f"received data from client : {data}")
-        await websocket.send_text(f"message text was: {data}")
+    try:
+        await websocket.accept()
+
+        while True:
+            data = await websocket.receive_text()
+            if "quit" in data or "close" in data:
+                await websocket.send_text("Closing connection")
+                await websocket.close(
+                    code=1000, reason="client req to close the connection"
+                )
+                break
+            await websocket.send_text(f"message text was: {data}")
+    except WebSocketDisconnect:
+        print("Client disconnected")
 
 
 if __name__ == "__main__":
