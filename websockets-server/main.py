@@ -18,11 +18,11 @@ html = """
         <h2 class="text-danger">your id: <span class="text-danger" id="ws-id"></span></h2>
    
         <form action="" class="mt-5" onsubmit="sendMessage(event)">
-            <input type="text" class="form control" id="messageText" autocomplete="off"/>
+            <input type="text" class="form-control" id="messageText" autocomplete="off"/>
             <button>Send</button>
         </form>
 
-        <ul id='messages' class="mt-5>
+        <ul id="messages" class="mt-5">
         </ul>
 
       <script>
@@ -32,7 +32,7 @@ html = """
               });
          
          
-               let ws = new WebSocket("ws://localhost:8000/ws/connection/${client_id}");
+               let ws = new WebSocket(`ws://localhost:8000/ws/${client_id}`);
             ws.onmessage = function(event) {
                 let messages = document.getElementById('messages');
                 let message = document.createElement('li')
@@ -71,7 +71,7 @@ class ConnectionManager:
     async def send_messages(self, message: str, websocket: WebSocket):
         await websocket.send_text(message)
 
-    async def brodcast_messages(self, message: str):
+    async def broadcast_messages(self, message: str):
         for conn in self.active_connections:
             await conn.send_text(message)
 
@@ -84,7 +84,7 @@ async def html_template():
     return HTMLResponse(content=html)
 
 
-@app.websocket("/ws/connection/{client_id}")
+@app.websocket("/ws/{client_id}")
 async def websocket_endpoint(websocket: WebSocket, client_id: int):
     try:
         await socket_manager.connect_connection(websocket)
@@ -94,7 +94,7 @@ async def websocket_endpoint(websocket: WebSocket, client_id: int):
             await socket_manager.brodcast_messages(f"client {client_id} says: {data}")
     except WebSocketDisconnect:
         socket_manager.close_connection(websocket)
-        await socket_manager.brodcast_messages(f"client {client_id} has left the chat")
+        await socket_manager.broadcast_messages(f"client {client_id} has left the chat")
         print("connection close")
 
 
