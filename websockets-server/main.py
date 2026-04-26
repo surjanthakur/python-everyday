@@ -26,10 +26,11 @@ html = """
         </ul>
 
       <script>
-              let client_id = int(Date.now());
+              const client_id = Date.now();
               window.addEventListener('DOMContentLoaded', () => {
-                document.getElementById('ws-id').textContent = str(client_id);
+                document.getElementById('ws-id').textContent = client_id;
               });
+         
          
                let ws = new WebSocket("ws://localhost:8000/ws/connection/${client_id}");
             ws.onmessage = function(event) {
@@ -60,6 +61,7 @@ class ConnectionManager:
     async def connect_connection(self, websocket: WebSocket):
         await websocket.accept()
         self.active_connections.append(websocket)
+        print(f"active connections: {self.active_connections}")
 
     # to close connection ---->
     def close_connection(self, websocket: WebSocket):
