@@ -71,9 +71,16 @@ class ConnectionManager:
     async def send_messages(self, message: str, websocket: WebSocket):
         await websocket.send_text(message)
 
+    # to send message for every connection
     async def broadcast_messages(self, message: str):
+        dead_conn = []
         for conn in self.active_connections:
-            await conn.send_text(message)
+            try:
+                await conn.send_text(message)
+            except Exception:
+                dead_conn.append(conn)
+        for conn in dead_conn:
+            self.active_connections.remove(conn)
 
 
 socket_manager = ConnectionManager()
