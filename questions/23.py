@@ -5,17 +5,16 @@
 # Input: "abcabcbb"
 # Output: 3  # "abc"
 
-s = "longpolling"
+s = "abcabcbb"
 
 
 def long_sub(inp_str: str):
     long_substring = []
     for i in inp_str:
-        if i not in long_substring:
-            long_substring.append(i)
-
         if i in long_substring:
             break
+        else:
+            long_substring.append(i)
 
     return "".join(long_substring)
 
