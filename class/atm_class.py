@@ -30,6 +30,7 @@ class Atm:
                 )
 
 
+# create default account with pin and the amount
 my_account = Atm(pin="1234", balance=4000)
 
 my_account.debit_ammount(amount=500, pin="1234")
