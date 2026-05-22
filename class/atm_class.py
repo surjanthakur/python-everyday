@@ -32,4 +32,4 @@ class Atm:
 
 my_account = Atm(pin="1234", balance=4000)
 
-my_account.add_amount(amount=3400, pin="1234")
+my_account.debit_ammount(amount=500, pin="1234")
