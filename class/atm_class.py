@@ -1,7 +1,7 @@
 class Atm:
 
     # ~ it's an constructor that execute's its value's automatically when the class object created
-    def __init__(self, pin: str, balance: int):
+    def __init__(self, pin: str, balance: int):  # its a special method
         self.pin = pin
         self.balance = balance
 
