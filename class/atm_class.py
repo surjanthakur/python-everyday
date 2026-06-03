@@ -24,7 +24,7 @@ class Atm:
                     f"amount diposite successfully , now your curr balance is {self.balance}"
                 )
 
-    def debit_ammount(self, amount: int, pin: str): 
+    def debit_ammount(self, amount: int, pin: str):
         if amount > 0 or amount <= self.balance:
             if self.pin == pin:
                 self.balance -= amount
