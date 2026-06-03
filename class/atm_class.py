@@ -4,6 +4,7 @@ class Atm:
     def __init__(self, pin: str, balance: int):  # its a special method
         self.pin = pin
         self.balance = balance
+        print(id(self))
 
     def check_balance(self, pin: str):
         if self.pin == pin:
@@ -23,7 +24,7 @@ class Atm:
                     f"amount diposite successfully , now your curr balance is {self.balance}"
                 )
 
-    def debit_ammount(self, amount: int, pin: str):
+    def debit_ammount(self, amount: int, pin: str): 
         if amount > 0 or amount <= self.balance:
             if self.pin == pin:
                 self.balance -= amount
@@ -35,4 +36,4 @@ class Atm:
 # create default account with pin and the amount
 my_account = Atm(pin="1234", balance=4000)
 
-my_account.debit_ammount(amount=500, pin="1234")
+print(id(my_account))
