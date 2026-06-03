@@ -12,5 +12,3 @@ class FoodCafe:
 
 
 u1 = FoodCafe("surjan", ["burger", "fries", "pizza", "beer"])
-
-u1.get_my_order()
