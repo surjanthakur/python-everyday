@@ -18,9 +18,9 @@ class Library:
     def add_book(self , book:Book):
         self.__all_books.append(book)
     
-    def search_book(self , author:str):
+    def search_book(self , query:str):
         for book in self.__all_books:
-            if book.author.strip().lower() ==  author.strip().lower():
+            if book.author.strip().lower() ==  query.strip().lower() or book.title.strip().lower() ==  query.strip().lower() :
                 return book
             else:
                 print("cannot find book")
@@ -41,4 +41,4 @@ b2 = Book("Robert Kiyosaki", "Rich Dad Poor Dad")
 library.add_book(b1)
 library.add_book(b2)
 
-print(library.borrow_book("Rich Dad Poor Dad"))
+print(library.search_book("Rich Dad Poor Dad"))
