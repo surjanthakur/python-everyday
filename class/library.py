@@ -12,11 +12,26 @@ class Library:
     def __init__(self):
         self.__all_books:list[Book] = []
     
-    def get_books(self):
+    def show_books(self):
         return self.__all_books
 
     def add_book(self , book:Book):
         self.__all_books.append(book)
+    
+    def search_book(self , author:str):
+        for book in self.__all_books:
+            if book.author.strip().lower() ==  author.strip().lower():
+                return book
+            else:
+                print("cannot find book")
+    def borrow_book(self , book_name:str):
+        for book in self.__all_books:
+            if book.title.strip().lower() == book_name.strip().lower():
+                self.__all_books.remove(book)
+                print(f"you borowed book: {book.title} by {book.author}")
+                return book
+            else:
+                print("cannot find book")
 
 library = Library()
 
@@ -26,5 +41,4 @@ b2 = Book("Robert Kiyosaki", "Rich Dad Poor Dad")
 library.add_book(b1)
 library.add_book(b2)
 
-for book in library.get_books():
-    print(book)
+print(library.borrow_book("Rich Dad Poor Dad"))
